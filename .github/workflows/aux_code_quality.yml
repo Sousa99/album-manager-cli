@@ -49,6 +49,9 @@ jobs:
     defaults:
       run:
         working-directory: ${{ inputs.module }}
+
+    needs:
+      - install-dependencies
     
     steps:
       - uses: actions/checkout@v4
