@@ -17,6 +17,9 @@ mypy = "^1.13.0"
 questionary = "^2.0.1"
 opencv-python = "^4.10.0.84"
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.7.3"
+mypy = "^1.13.0"
 
 [build-system]
 requires = ["poetry-core"]
