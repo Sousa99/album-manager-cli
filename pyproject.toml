@@ -5,9 +5,17 @@ description = "TBD"
 authors = ["Rodrigo Sousa <rod_sousa@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+  { include = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.13"
+pillow = "^11.0.0"
+loguru = "^0.7.2"
+mypy = "^1.13.0"
+questionary = "^2.0.1"
+opencv-python = "^4.10.0.84"
 
 
 [build-system]
