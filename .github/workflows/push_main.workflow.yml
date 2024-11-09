@@ -1,0 +1,14 @@
+name: Push on Main
+run-name: 🚀 Push on Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-code-quality:
+    name: 🐍 Branch Quality Validation
+    uses: ./.github/workflows/aux_code_quality.yml
+    with:
+      module: .

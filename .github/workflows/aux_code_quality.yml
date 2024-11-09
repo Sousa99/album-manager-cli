@@ -1,0 +1,68 @@
+name: Python Branch Quality Validation
+run-name: 🐍 Python Branch Quality Validation
+
+on:
+  workflow_call:
+    inputs:
+      module:
+        description: 'Module on which to run code quality validation'
+        required: true
+        type: string
+
+jobs:
+  install-dependencies:
+    name: 📦 Install Dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.module }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo 'export PATH="$HOME/.local/bin:$PATH"' >> $GITHUB_ENV
+      - name: Install Dependencies
+        run: |
+          poetry install
+
+  lint:
+    name: 🧹 Lint with Ruff
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.module }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Ruff
+        run: poetry run ruff check .
+
+  type-check:
+    name: 🔍 Type Check with MyPy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.module }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run MyPy
+        run: poetry run mypy .
+
+  test:
+    name: 🧪 Test Suite
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.module }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Tests
+        run: poetry run pytest
