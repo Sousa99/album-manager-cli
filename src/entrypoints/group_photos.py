@@ -23,13 +23,13 @@ logger.debug(f"\tRead Directory: {read_directory}")
 logger.debug(f"\tWrite Directory: {write_directory}")
 
 # Checking if directory exists
-logger.info(f"Checking if read directory exists")
+logger.info("Checking if read directory exists")
 if not read_directory.is_dir():
-  logger.error(f"Read directory does not exist or can't be accessed")
+  logger.error("Read directory does not exist or can't be accessed")
   raise f"Read directory '{read_directory}' does not exist or can't be accessed"
 
 # Getting all images within directory
-logger.info(f"Retrieving all images within read directory")
+logger.info("Retrieving all images within read directory")
 directory_entries = os.listdir(read_directory)
 directory_images = list(filter(lambda x: is_image(read_directory, x), directory_entries))
 logger.info(f"From directory '#{len(directory_images)}' images were found")
@@ -85,7 +85,7 @@ for album in albums:
 
   album_path = write_directory.joinpath(fully_qualified_album)
   album_path.mkdir(parents=True, exist_ok=True)
-  logger.debug(f"Album folder created")
+  logger.debug("Album folder created")
 
   for image_filename in album.image_filenames:
     image_path = read_directory.joinpath(image_filename)
@@ -93,6 +93,6 @@ for album in albums:
     shutil.copy(image_path, album_path)
     logger.debug(f"Image '{image_filename}' copied into album '{fully_qualified_album}'")
   
-  logger.debug(f"Album fully generated")
+  logger.debug("Album fully generated")
 
 logger.info(f"Script saved '#{len(albums)}' albums")
