@@ -26,7 +26,7 @@ logger.debug(f"\tWrite Directory: {write_directory}")
 logger.info("Checking if read directory exists")
 if not read_directory.is_dir():
   logger.error("Read directory does not exist or can't be accessed")
-  raise f"Read directory '{read_directory}' does not exist or can't be accessed"
+  raise BaseException(f"Read directory '{read_directory}' does not exist or can't be accessed")
 
 # Getting all images within directory
 logger.info("Retrieving all images within read directory")

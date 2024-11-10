@@ -1,5 +1,6 @@
 import cv2
 import mimetypes
+from typing import Any
 from PIL import Image, ExifTags
 from pathlib import Path
 
@@ -12,11 +13,13 @@ def is_image(directory: Path, file: str) -> bool:
 
   mimetypes_guess = mimetypes.guess_type(full_path)
   first_guess = mimetypes_guess[0]
+  if not first_guess:
+    return False
 
   return first_guess.startswith("image")
 
-def get_image_exif(image: Image) -> dict[str, any]:
-  image_full_exif = image._getexif()
+def get_image_exif(image: Image.Image) -> dict[str, Any]:
+  image_full_exif = image.getexif()
   image_treated_exif = {}
 
   for (key, value) in image_full_exif.items():
@@ -29,9 +32,9 @@ def get_image_exif(image: Image) -> dict[str, any]:
 
   return image_treated_exif
 
-def show_image(image_full_path: str, window_name: str, max_width: int, max_height: int):
+def show_image(image_full_path: Path, window_name: str, max_width: int, max_height: int):
 
-  image = cv2.imread(image_full_path)
+  image = cv2.imread(str(image_full_path))
   image_height = image.shape[0]
   image_width = image.shape[1]
 
