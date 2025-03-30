@@ -1,6 +1,6 @@
 import cv2
 import mimetypes
-from typing import Any
+from typing import Any, Dict
 from PIL import Image, ExifTags
 from pathlib import Path
 
@@ -18,7 +18,7 @@ def is_image(directory: Path, file: str) -> bool:
 
   return first_guess.startswith("image")
 
-def get_image_exif(image: Image.Image) -> dict[str, Any]:
+def get_image_exif(image: Image.Image) -> Dict[str, Any]:
   image_full_exif = image.getexif()
   image_treated_exif = {}
 

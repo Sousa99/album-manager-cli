@@ -1,8 +1,9 @@
+from typing import List
 import cv2
 from pathlib import Path
 from src.utils.image_utils import show_image
 
-def show_album(images: list[Path], album_date: str, max_width: int, max_height: int):
+def show_album(images: List[Path], album_date: str, max_width: int, max_height: int):
 
   photo_index = 0
   photos_length = len(images)

@@ -1,5 +1,6 @@
 import os
 import shutil
+from typing import Dict, List
 import questionary
 from datetime import datetime
 from loguru import logger
@@ -35,7 +36,7 @@ directory_images = list(filter(lambda x: is_image(read_directory, x), directory_
 logger.info(f"From directory '#{len(directory_images)}' images were found")
 
 # Iterating images and group accordingly
-images_grouped: dict[str, list[str]] = {}
+images_grouped: Dict[str, List[str]] = {}
 for image_filename in directory_images:
   image_full_path = read_directory.joinpath(image_filename)
 
@@ -54,7 +55,7 @@ for image_filename in directory_images:
 logger.info(f"Script generated '#{len(images_grouped.keys())}' groups of images")
 
 # For each group associate the correct information
-albums: list[Album] = []
+albums: List[Album] = []
 for (album_date, images) in images_grouped.items():
   
   show_photos = questionary.confirm("Do you wish to see the photos from this group?").ask()

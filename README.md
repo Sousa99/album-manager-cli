@@ -32,8 +32,8 @@ Follow these steps to get everything up and running:
   cd album-manager-cli
   ```
 
-2. Ensure Python 3.13 is Installed  
-  Make sure you have Python 3.13 installed. If not, you can grab it from [python.org]().
+2. Ensure Python 3.8 is Installed  
+  Make sure you have Python 3.8 installed. If not, you can grab it from [python.org]().
 
 3. Install Poetry  
   Poetry is used for managing dependencies and environments. You can install Poetry via the official installer:
