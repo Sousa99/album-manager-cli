@@ -8,7 +8,7 @@ from PIL import Image
 import argparse
 
 from src.models.album import Album
-from src.utils.image_utils import is_image, get_image_exif
+from src.utils.image_non_graphic_utils import is_image, get_image_exif
 
 parser = argparse.ArgumentParser(
     prog="Group Photos - Non Interactive",

@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image
 
 from src.models.album import Album
-from src.utils.image_utils import is_image, get_image_exif
+from src.utils.image_non_graphic_utils import is_image, get_image_exif
 from src.utils.album_utils import show_album
 
 logger.info("Application starting up 🚀")
