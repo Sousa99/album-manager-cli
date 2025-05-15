@@ -2,7 +2,13 @@ import mimetypes
 from typing import Any, Dict
 from PIL import Image, ExifTags
 from pathlib import Path
+from pillow_heif import register_heif_opener
 
+# Add some unsuported mimetypes into the recognized formats
+mimetypes.add_type('image/heic', '.heic')
+mimetypes.add_type('image/heif', '.heif')
+# Register heif opener for pillow
+register_heif_opener()
 
 def is_image(directory: Path, file: str) -> bool:
     full_path = directory.joinpath(file)

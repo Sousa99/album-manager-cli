@@ -22,8 +22,8 @@ logger.info("Application starting up 🚀")
 
 # Retrieving parameters
 args = parser.parse_args()
-read_directory = Path(args.read)
-write_directory = Path(args.write)
+read_directory = Path(args.read).absolute()
+write_directory = Path(args.write).absolute()
 logger.trace("Some parameters were retrieved!")
 
 # Write out parameters
