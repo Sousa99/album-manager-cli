@@ -3,13 +3,14 @@ from datetime import datetime
 from typing import Any, Dict, List
 from PIL import Image, ExifTags
 from pathlib import Path
-from pillow_heif import register_heif_opener
+from pillow_heif import register_heif_opener  # type: ignore
 
 # Add some unsuported mimetypes into the recognized formats
-mimetypes.add_type('image/heic', '.heic')
-mimetypes.add_type('image/heif', '.heif')
+mimetypes.add_type("image/heic", ".heic")
+mimetypes.add_type("image/heif", ".heif")
 # Register heif opener for pillow
 register_heif_opener()
+
 
 def is_image(directory: Path, file: str) -> bool:
     full_path = directory.joinpath(file)
@@ -40,7 +41,8 @@ def get_image_exif(image: Image.Image) -> Dict[str, Any]:
 
     return image_treated_exif
 
-def group_images(images: List[Path]) -> Dict[str, List[Path]]:
+
+def group_images(images: List[str]) -> Dict[str, List[str]]:
     images_grouped: Dict[str, List[str]] = {}
     for image_filepath in images:
         image = Image.open(image_filepath)

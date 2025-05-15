@@ -1,12 +1,9 @@
 import os
 import shutil
-from datetime import datetime
 from typing import Dict, List
 from pathlib import Path
 from loguru import logger
-from PIL import Image
 import argparse
-import ffmpeg
 
 from src.models.album import Album
 from src.utils.image_non_graphic_utils import is_image, group_images
@@ -65,8 +62,11 @@ grouped_videos = group_videos(directory_videos)
 logger.info(f"Script generated '#{len(grouped_images.keys())}' groups of images")
 logger.info(f"Script generated '#{len(grouped_videos.keys())}' groups of videos")
 
-grouped_assets = {}
-for d in (grouped_images, grouped_videos): # you can list as many input dicts as you want here
+grouped_assets: Dict[str, List[str]] = {}
+for d in (
+    grouped_images,
+    grouped_videos,
+):  # you can list as many input dicts as you want here
     for key, value in d.items():
         if key not in grouped_assets:
             grouped_assets[key] = []

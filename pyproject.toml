@@ -18,6 +18,7 @@ questionary = "^2.0.1"
 opencv-python = "^4.10.0.84"
 pillow-heif = "0.3.2"
 ffmpeg-python = "^0.2.0"
+types-pillow = "^10.2.0.20240822"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.7.3"
