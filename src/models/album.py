@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Optional
 
 
@@ -6,4 +7,4 @@ from typing import List, Optional
 class Album:
     date: str
     name: Optional[str]
-    image_filenames: List[str]
+    asset_fullpaths: List[str]

@@ -6,9 +6,11 @@ from pathlib import Path
 from loguru import logger
 from PIL import Image
 import argparse
+import ffmpeg
 
 from src.models.album import Album
-from src.utils.image_non_graphic_utils import is_image, get_image_exif
+from src.utils.image_non_graphic_utils import is_image, group_images
+from src.utils.video_non_graphic_utils import group_videos, is_video
 
 parser = argparse.ArgumentParser(
     prog="Group Photos - Non Interactive",
@@ -49,37 +51,36 @@ directory_entries = [
 directory_images = list(
     filter(lambda x: is_image(read_directory, x), directory_entries)
 )
+directory_videos = list(
+    filter(lambda x: is_video(read_directory, x), directory_entries)
+)
+
 logger.info(f"From directory '#{len(directory_images)}' images were found")
+logger.info(f"From directory '#{len(directory_videos)}' videos were found")
 
-# Iterating images and group accordingly
-images_grouped: Dict[str, List[str]] = {}
-for image_filename in directory_images:
-    image_full_path = read_directory.joinpath(image_filename)
+# Group images and videos accordingly
+grouped_images = group_images(directory_images)
+grouped_videos = group_videos(directory_videos)
 
-    image = Image.open(image_full_path)
-    image_exif = get_image_exif(image)
+logger.info(f"Script generated '#{len(grouped_images.keys())}' groups of images")
+logger.info(f"Script generated '#{len(grouped_videos.keys())}' groups of videos")
 
-    image_key = "UNKNOWN"
-    if "DateTime" in image_exif:
-        image_datetime_str = image_exif["DateTime"]
-        image_datetime = datetime.strptime(image_datetime_str, "%Y:%m:%d %H:%M:%S")
+grouped_assets = {}
+for d in (grouped_images, grouped_videos): # you can list as many input dicts as you want here
+    for key, value in d.items():
+        if key not in grouped_assets:
+            grouped_assets[key] = []
 
-        image_key = datetime.strftime(image_datetime, "%Y.%m.%d")
-
-    if image_key not in images_grouped:
-        images_grouped[image_key] = []
-    images_grouped[image_key].append(image_filename)
-
-logger.info(f"Script generated '#{len(images_grouped.keys())}' groups of images")
+        grouped_assets[key].extend(value)
 
 # For each group associate the correct information
 albums: List[Album] = []
-for album_date, images in images_grouped.items():
-    album = Album(album_date, None, images)
+for album_date, assets in grouped_assets.items():
+    album = Album(album_date, None, assets)
 
     logger.debug("A new album has been generated:")
     logger.debug(f"\tDate: {album.date}")
-    logger.debug(f"\tPhotos: #{len(album.image_filenames)}")
+    logger.debug(f"\tAssets: #{len(album.asset_fullpaths)}")
 
     albums.append(album)
 
@@ -94,12 +95,13 @@ for album in albums:
     album_path.mkdir(parents=True, exist_ok=True)
     logger.debug("Album folder created")
 
-    for image_filename in album.image_filenames:
-        image_path = read_directory.joinpath(image_filename)
+    for asset_fullpath_str in album.asset_fullpaths:
+        asset_fullpath = Path(asset_fullpath_str)
+        asset_filename = asset_fullpath.name
 
-        shutil.copy(image_path, album_path)
+        shutil.copy(asset_fullpath, album_path)
         logger.debug(
-            f"Image '{image_filename}' copied into album '{fully_qualified_album}'"
+            f"Asset '{asset_filename}' copied into album '{fully_qualified_album}'"
         )
 
     logger.debug("Album fully generated")

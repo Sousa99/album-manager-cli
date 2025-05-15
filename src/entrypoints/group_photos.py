@@ -91,7 +91,7 @@ for album_date, images in images_grouped.items():
     logger.debug("A new album has been generated:")
     logger.debug(f"\tDate: {album.date}")
     logger.debug(f"\tName: {album.name}")
-    logger.debug(f"\tPhotos: #{len(album.image_filenames)}")
+    logger.debug(f"\tPhotos: #{len(album.asset_fullpaths)}")
 
     albums.append(album)
 
@@ -106,12 +106,13 @@ for album in albums:
     album_path.mkdir(parents=True, exist_ok=True)
     logger.debug("Album folder created")
 
-    for image_filename in album.image_filenames:
-        image_path = read_directory.joinpath(image_filename)
+    for image_fullpath_str in album.asset_fullpaths:
+        image_fullpath = Path(image_fullpath_str)
+        image_filename = image_fullpath.name
 
-        shutil.copy(image_path, album_path)
+        shutil.copy(image_fullpath, album_path)
         logger.debug(
-            f"Image '{image_filename}' copied into album '{fully_qualified_album}'"
+            f"Asset '{image_filename}' copied into album '{fully_qualified_album}'"
         )
 
     logger.debug("Album fully generated")
