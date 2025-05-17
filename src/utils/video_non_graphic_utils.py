@@ -34,7 +34,9 @@ def group_videos(videos: List[str]) -> Dict[str, List[str]]:
             video_info = {}
 
         video_key = "UNKNOWN"
-        video_creation_time = video_info.get("format", {}).get("tags", {}).get("creation_time", None)
+        video_creation_time = (
+            video_info.get("format", {}).get("tags", {}).get("creation_time", None)
+        )
         if video_creation_time:
             video_datetime = datetime.strptime(
                 video_creation_time, "%Y-%m-%dT%H:%M:%S.%fZ"

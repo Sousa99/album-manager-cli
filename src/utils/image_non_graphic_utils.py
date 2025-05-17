@@ -41,6 +41,7 @@ def get_image_exif(image: Image.Image) -> Dict[str, Any]:
 
     return image_treated_exif
 
+
 def parse_image_datetime(image_datetime_str: str) -> datetime:
     for fmt in ("%Y:%m:%d %H:%M:%S", "%Y-%m-%dT%H:%M:%SGMT"):
         try:
@@ -49,10 +50,10 @@ def parse_image_datetime(image_datetime_str: str) -> datetime:
             continue
     raise ValueError(f"Unrecognized date format: {image_datetime_str}")
 
+
 def group_images(images: List[str]) -> Dict[str, List[str]]:
     images_grouped: Dict[str, List[str]] = {}
     for image_filepath in images:
-
         try:
             image = Image.open(image_filepath)
             image_exif = get_image_exif(image)
