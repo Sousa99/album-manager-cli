@@ -41,17 +41,28 @@ def get_image_exif(image: Image.Image) -> Dict[str, Any]:
 
     return image_treated_exif
 
+def parse_image_datetime(image_datetime_str: str) -> datetime:
+    for fmt in ("%Y:%m:%d %H:%M:%S", "%Y-%m-%dT%H:%M:%SGMT"):
+        try:
+            return datetime.strptime(image_datetime_str, fmt)
+        except ValueError:
+            continue
+    raise ValueError(f"Unrecognized date format: {image_datetime_str}")
 
 def group_images(images: List[str]) -> Dict[str, List[str]]:
     images_grouped: Dict[str, List[str]] = {}
     for image_filepath in images:
-        image = Image.open(image_filepath)
-        image_exif = get_image_exif(image)
+
+        try:
+            image = Image.open(image_filepath)
+            image_exif = get_image_exif(image)
+        except Exception:
+            image_exif = {}
 
         image_key = "UNKNOWN"
         if "DateTime" in image_exif:
             image_datetime_str = image_exif["DateTime"]
-            image_datetime = datetime.strptime(image_datetime_str, "%Y:%m:%d %H:%M:%S")
+            image_datetime = parse_image_datetime(image_datetime_str)
 
             image_key = datetime.strftime(image_datetime, "%Y.%m.%d")
 
