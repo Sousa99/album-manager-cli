@@ -1,6 +1,6 @@
 import mimetypes
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 from PIL import Image, ExifTags
 from pathlib import Path
 from pillow_heif import register_heif_opener  # type: ignore
@@ -27,7 +27,7 @@ def is_image(directory: Path, file: str) -> bool:
     return first_guess.startswith("image")
 
 
-def get_image_exif(image: Image.Image) -> Dict[str, Any]:
+def get_image_exif(image: Image.Image) -> dict[str, Any]:
     image_full_exif = image.getexif()
     image_treated_exif = {}
 
@@ -51,8 +51,8 @@ def parse_image_datetime(image_datetime_str: str) -> datetime:
     raise ValueError(f"Unrecognized date format: {image_datetime_str}")
 
 
-def group_images(images: List[str]) -> Dict[str, List[str]]:
-    images_grouped: Dict[str, List[str]] = {}
+def group_images(images: list[str]) -> dict[str, list[str]]:
+    images_grouped: dict[str, list[str]] = {}
     for image_filepath in images:
         try:
             image = Image.open(image_filepath)

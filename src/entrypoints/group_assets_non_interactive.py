@@ -1,6 +1,5 @@
 import os
 import shutil
-from typing import Dict, List
 from pathlib import Path
 from loguru import logger
 import argparse
@@ -62,7 +61,7 @@ grouped_videos = group_videos(directory_videos)
 logger.info(f"Script generated '#{len(grouped_images.keys())}' groups of images")
 logger.info(f"Script generated '#{len(grouped_videos.keys())}' groups of videos")
 
-grouped_assets: Dict[str, List[str]] = {}
+grouped_assets: dict[str, list[str]] = {}
 for d in (
     grouped_images,
     grouped_videos,
@@ -74,7 +73,7 @@ for d in (
         grouped_assets[key].extend(value)
 
 # For each group associate the correct information
-albums: List[Album] = []
+albums: list[Album] = []
 for album_date, assets in grouped_assets.items():
     album = Album(album_date, None, assets)
 

@@ -1,8 +1,8 @@
 import mimetypes
+from typing import Any
 import ffmpeg  # type: ignore
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
 
 
 def is_video(directory: Path, file: str) -> bool:
@@ -20,13 +20,13 @@ def is_video(directory: Path, file: str) -> bool:
     return first_guess.startswith("video")
 
 
-def get_video_info(video: str) -> Dict[str, Any]:
+def get_video_info(video: str) -> dict[str, Any]:
     video_information = ffmpeg.probe(video)
     return video_information
 
 
-def group_videos(videos: List[str]) -> Dict[str, List[str]]:
-    videos_grouped: Dict[str, List[str]] = {}
+def group_videos(videos: list[str]) -> dict[str, list[str]]:
+    videos_grouped: dict[str, list[str]] = {}
     for video_filepath in videos:
         try:
             video_info = get_video_info(video_filepath)
