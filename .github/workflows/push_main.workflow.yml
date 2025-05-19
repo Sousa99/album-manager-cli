@@ -12,3 +12,9 @@ jobs:
     uses: ./.github/workflows/aux_code_quality.yml
     with:
       module: .
+
+  release:
+    name: 🚀 Release Project
+    uses: ./.github/workflows/aux_release.yml
+    with:
+      module: .

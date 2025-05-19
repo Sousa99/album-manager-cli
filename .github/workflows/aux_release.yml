@@ -1,0 +1,55 @@
+name: Python Release
+run-name: 🚀 Python Release
+
+on:
+  workflow_call:
+    inputs:
+      module:
+        description: 'Module on which to run code quality validation'
+        required: true
+        type: string
+
+jobs:
+  release:
+    name: 🚀 Release Project
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.module }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+      
+      - name: Install and configure Poetry
+        uses: snok/install-poetry@v1
+
+      - name: Build Project
+        run: poetry build
+
+      - name: Semantic Version Release
+        id: release
+        # Adjust tag with desired version if applicable.
+        uses: python-semantic-release/python-semantic-release@v9.21.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+
+      - name: Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.21.1
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
+
+      - name: Upload Distribution Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: distribution-artifacts
+          path: dist
+          if-no-files-found: error
