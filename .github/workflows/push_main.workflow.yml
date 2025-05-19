@@ -18,3 +18,5 @@ jobs:
     uses: ./.github/workflows/aux_release.yml
     with:
       module: .
+    needs: 
+      - run-code-quality
