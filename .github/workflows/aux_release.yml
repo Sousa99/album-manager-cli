@@ -17,6 +17,9 @@ jobs:
       run:
         working-directory: ${{ inputs.module }}
 
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
