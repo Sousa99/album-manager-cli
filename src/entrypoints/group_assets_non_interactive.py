@@ -7,6 +7,7 @@ from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
 from src.models.album import Album
+from src.models.manifest import Manifest
 from src.utils.image_non_graphic_utils import is_image, group_images
 from src.utils.video_non_graphic_utils import group_videos, is_video
 
@@ -99,6 +100,7 @@ for album_date, assets in grouped_assets.items():
 logger.info(f"Script generated '#{len(albums)}' albums")
 
 # For each album save in the appropriate folder the images
+manifest = Manifest()
 with logging_redirect_tqdm():
     progress_bar_albums = tqdm(albums, desc="Processing albums", leave=False)
     for album in progress_bar_albums:
@@ -116,7 +118,14 @@ with logging_redirect_tqdm():
             asset_fullpath = Path(asset_fullpath_str)
             asset_filename = asset_fullpath.name
 
+            asset_fullpath_destination = album_path.joinpath(asset_fullpath.name)
+
             shutil.copy(asset_fullpath, album_path)
+            manifest.add_entry(
+                album=fully_qualified_album,
+                source=asset_fullpath,
+                destination=asset_fullpath_destination,
+            )
             logger.debug(
                 f"Asset '{asset_filename}' copied into album '{fully_qualified_album}'"
             )
@@ -124,3 +133,6 @@ with logging_redirect_tqdm():
         logger.debug("Album fully generated")
 
 logger.info(f"Script saved '#{len(albums)}' albums")
+
+manifest_path = write_directory.joinpath("manifest.json")
+manifest.save(manifest_path)
