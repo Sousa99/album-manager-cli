@@ -3,6 +3,7 @@ from typing import Any
 import ffmpeg  # type: ignore
 from datetime import datetime
 from pathlib import Path
+from tqdm import tqdm
 
 
 def is_video(directory: Path, file: str) -> bool:
@@ -27,7 +28,9 @@ def get_video_info(video: str) -> dict[str, Any]:
 
 def group_videos(videos: list[str]) -> dict[str, list[str]]:
     videos_grouped: dict[str, list[str]] = {}
-    for video_filepath in videos:
+
+    progress_bar_videos = tqdm(videos, desc="Processing images", leave=False)
+    for video_filepath in progress_bar_videos:
         try:
             video_info = get_video_info(video_filepath)
         except Exception:

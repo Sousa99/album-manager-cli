@@ -3,6 +3,8 @@ import shutil
 from pathlib import Path
 from loguru import logger
 import argparse
+from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from src.models.album import Album
 from src.utils.image_non_graphic_utils import is_image, group_images
@@ -16,6 +18,17 @@ parser = argparse.ArgumentParser(
 parser.add_argument("read")
 parser.add_argument("write")
 
+# Logger configurations
+logger_format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> [<level>{level: ^12}</level>] <level>{message}</level>"
+logger.configure(
+    handlers=[
+        dict(
+            sink=lambda msg: tqdm.write(msg, end=""),
+            format=logger_format,
+            colorize=True,
+        )
+    ]
+)
 logger.info("Application starting up 🚀")
 
 # Retrieving parameters
@@ -65,7 +78,7 @@ grouped_assets: dict[str, list[str]] = {}
 for d in (
     grouped_images,
     grouped_videos,
-):  # you can list as many input dicts as you want here
+):
     for key, value in d.items():
         if key not in grouped_assets:
             grouped_assets[key] = []
@@ -86,23 +99,28 @@ for album_date, assets in grouped_assets.items():
 logger.info(f"Script generated '#{len(albums)}' albums")
 
 # For each album save in the appropriate folder the images
-for album in albums:
-    fully_qualified_album = f"{album.date}"
-    logger.debug(f"Preparing to save album '{fully_qualified_album}'")
+with logging_redirect_tqdm():
+    progress_bar_albums = tqdm(albums, desc="Processing albums", leave=False)
+    for album in progress_bar_albums:
+        fully_qualified_album = f"{album.date}"
+        logger.debug(f"Preparing to save album '{fully_qualified_album}'")
 
-    album_path = write_directory.joinpath(fully_qualified_album)
-    album_path.mkdir(parents=True, exist_ok=True)
-    logger.debug("Album folder created")
+        album_path = write_directory.joinpath(fully_qualified_album)
+        album_path.mkdir(parents=True, exist_ok=True)
+        logger.debug("Album folder created")
 
-    for asset_fullpath_str in album.asset_fullpaths:
-        asset_fullpath = Path(asset_fullpath_str)
-        asset_filename = asset_fullpath.name
-
-        shutil.copy(asset_fullpath, album_path)
-        logger.debug(
-            f"Asset '{asset_filename}' copied into album '{fully_qualified_album}'"
+        progress_bar_assets = tqdm(
+            album.asset_fullpaths, desc="Processing assets", leave=False
         )
+        for asset_fullpath_str in progress_bar_assets:
+            asset_fullpath = Path(asset_fullpath_str)
+            asset_filename = asset_fullpath.name
 
-    logger.debug("Album fully generated")
+            shutil.copy(asset_fullpath, album_path)
+            logger.debug(
+                f"Asset '{asset_filename}' copied into album '{fully_qualified_album}'"
+            )
+
+        logger.debug("Album fully generated")
 
 logger.info(f"Script saved '#{len(albums)}' albums")

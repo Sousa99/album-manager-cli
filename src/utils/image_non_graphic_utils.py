@@ -4,6 +4,7 @@ from typing import Any
 from PIL import Image, ExifTags
 from pathlib import Path
 from pillow_heif import register_heif_opener  # type: ignore
+from tqdm import tqdm
 
 # Add some unsuported mimetypes into the recognized formats
 mimetypes.add_type("image/heic", ".heic")
@@ -53,7 +54,9 @@ def parse_image_datetime(image_datetime_str: str) -> datetime:
 
 def group_images(images: list[str]) -> dict[str, list[str]]:
     images_grouped: dict[str, list[str]] = {}
-    for image_filepath in images:
+
+    progress_bar_images = tqdm(images, desc="Processing images", leave=False)
+    for image_filepath in progress_bar_images:
         try:
             image = Image.open(image_filepath)
             image_exif = get_image_exif(image)

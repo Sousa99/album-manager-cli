@@ -20,6 +20,7 @@ opencv-python = "4.11.0.86"
 pillow-heif = "0.22.0"
 ffmpeg-python = "0.2.0"
 types-pillow = "10.2.0.20240822"
+tqdm = "^4.67.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "0.11.10"
