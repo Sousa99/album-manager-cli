@@ -1,6 +1,33 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-07-08)
+
+### Chores
+
+- Add necessary stubs for tqdm
+  ([`5eb4bd3`](https://github.com/Sousa99/album-manager-cli/commit/5eb4bd38b096260ca8759c1dc659182c810bd3f9))
+
+- Remove unused scripts
+  ([`277d79b`](https://github.com/Sousa99/album-manager-cli/commit/277d79bd91d0f47d8264217d8531f3b633688eb5))
+
+- Update requirements.txt
+  ([`2ce9561`](https://github.com/Sousa99/album-manager-cli/commit/2ce9561ff272efbc7eb1dd1c02a76c0e3bd8cc16))
+
+### Continuous Integration
+
+- Remove unused dependency
+  ([`f7163e2`](https://github.com/Sousa99/album-manager-cli/commit/f7163e2c76cd99240bf91bc679ec56d231dc4cce))
+
+### Features
+
+- Add tqdm for progress bars on script execution
+  ([`8dc9114`](https://github.com/Sousa99/album-manager-cli/commit/8dc9114c6391217d55871488d66824e9deed7115))
+
+- Export manifest.json at end
+  ([`32b25dd`](https://github.com/Sousa99/album-manager-cli/commit/32b25dd1dc08ff1d8228de66540c40bd9999055a))
+
+
 ## v0.1.0 (2025-05-19)
 
 ### Bug Fixes
