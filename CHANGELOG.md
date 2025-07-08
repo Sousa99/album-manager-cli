@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-07-08)
+
+### Features
+
+- Develop script to analyze manifest files
+  ([`f536246`](https://github.com/Sousa99/album-manager-cli/commit/f53624677ed7fcd0589c4e92d6c12cd2e4babf02))
+
+
 ## v0.2.0 (2025-07-08)
 
 ### Chores
