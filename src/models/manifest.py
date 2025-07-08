@@ -27,3 +27,16 @@ class Manifest:
         """Write the manifest to a JSON file."""
         with path.open("w", encoding="utf-8") as file:
             json.dump(asdict(self), file, indent=2, ensure_ascii=False)
+
+    @classmethod
+    def load(cls, path: Path) -> "Manifest":
+        """Read a manifest from a JSON file."""
+        with path.open("r", encoding="utf-8") as file:
+            raw_data = json.load(file)
+
+        albums: Dict[str, List[ManifestEntry]] = {
+            album: [ManifestEntry(**entry) for entry in entries]
+            for album, entries in raw_data["albums"].items()
+        }
+
+        return cls(albums=albums)
