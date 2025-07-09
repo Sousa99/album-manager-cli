@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import shutil
 from pathlib import Path
@@ -100,7 +101,7 @@ for album_date, assets in grouped_assets.items():
 logger.info(f"Script generated '#{len(albums)}' albums")
 
 # For each album save in the appropriate folder the images
-manifest = Manifest()
+manifest = Manifest(str(read_directory), str(write_directory))
 with logging_redirect_tqdm():
     progress_bar_albums = tqdm(albums, desc="Processing albums", leave=False)
     for album in progress_bar_albums:
@@ -134,5 +135,7 @@ with logging_redirect_tqdm():
 
 logger.info(f"Script saved '#{len(albums)}' albums")
 
-manifest_path = write_directory.joinpath("manifest.json")
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+manifest_file = f"manifest_{timestamp}.json"
+manifest_path = write_directory.joinpath(manifest_file)
 manifest.save(manifest_path)

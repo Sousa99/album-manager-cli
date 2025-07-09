@@ -12,6 +12,8 @@ class ManifestEntry:
 
 @dataclass
 class Manifest:
+    read: str
+    write: str
     albums: Dict[str, List[ManifestEntry]] = field(default_factory=dict)
 
     def add_entry(
@@ -34,9 +36,11 @@ class Manifest:
         with path.open("r", encoding="utf-8") as file:
             raw_data = json.load(file)
 
+        read = raw_data["read"]
+        write = raw_data["write"]
         albums: Dict[str, List[ManifestEntry]] = {
             album: [ManifestEntry(**entry) for entry in entries]
             for album, entries in raw_data["albums"].items()
         }
 
-        return cls(albums=albums)
+        return cls(read=read, write=write, albums=albums)
