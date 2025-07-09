@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-07-09)
+
+### Documentation
+
+- Update documentation to match scripts developed
+  ([`59669a5`](https://github.com/Sousa99/album-manager-cli/commit/59669a577d10442a146e894c451c422b6b89d29e))
+
+### Features
+
+- Manifest filename includes timestamp
+  ([`b33139a`](https://github.com/Sousa99/album-manager-cli/commit/b33139a59ad1240a1ad3b7b1b47b9a4ea17eb14f))
+
+
 ## v0.3.0 (2025-07-08)
 
 ### Features
