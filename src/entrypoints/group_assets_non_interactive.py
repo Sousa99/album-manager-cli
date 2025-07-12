@@ -121,7 +121,7 @@ with logging_redirect_tqdm():
 
             asset_fullpath_destination = album_path.joinpath(asset_fullpath.name)
 
-            shutil.copy(asset_fullpath, album_path)
+            shutil.copy2(asset_fullpath, album_path)
             manifest.add_entry(
                 album=fully_qualified_album,
                 source=asset_fullpath,
