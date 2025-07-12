@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.4.1 (2025-07-12)
+
+### Bug Fixes
+
+- Experiment by switching to copy2 utility
+  ([`b0f6892`](https://github.com/Sousa99/album-manager-cli/commit/b0f68923081d90344ea1b00d5cdcb57f2af373d8))
+
+
 ## v0.4.0 (2025-07-09)
 
 ### Documentation
