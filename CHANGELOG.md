@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.5.0 (2025-08-18)
+
+### Features
+
+- Report failure on overwriting asset and deal with repeated asset names in default album
+  ([`3c31bb2`](https://github.com/Sousa99/album-manager-cli/commit/3c31bb2b2d07a0bc2b35656a9089e5c4d5f897b4))
+
+
 ## v0.4.1 (2025-07-12)
 
 ### Bug Fixes
