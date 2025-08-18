@@ -9,7 +9,7 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 
 from src.models.album import Album
 from src.models.manifest import Manifest
-from src.utils.asset_utils import compute_asset_filename
+from src.utils.asset_utils import check_copy_creates_conflict, compute_asset_filename
 from src.utils.image_non_graphic_utils import is_image, group_images
 from src.utils.video_non_graphic_utils import group_videos, is_video
 
@@ -124,12 +124,17 @@ with logging_redirect_tqdm():
             )
             asset_fullpath_destination = album_path.joinpath(asset_filename)
 
-            destination_already_exists = os.path.isfile(asset_fullpath_destination)
-            if destination_already_exists:
+            # Check if copy creates conflict
+            conflict = check_copy_creates_conflict(
+                asset_fullpath, asset_fullpath_destination
+            )
+            if conflict:
                 failed_copies += 1
                 logger.error(
-                    f"Asset '{asset_filename}' could not be copied to album '{fully_qualified_album}' as the file already exists"
+                    f"Asset '{asset_fullpath}' could not be copied to album '{fully_qualified_album}' as the file already exists"
                 )
+
+                continue
 
             shutil.copy2(asset_fullpath, album_path)
             manifest.add_entry(
