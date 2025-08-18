@@ -9,6 +9,7 @@ from tqdm.contrib.logging import logging_redirect_tqdm
 
 from src.models.album import Album
 from src.models.manifest import Manifest
+from src.utils.asset_utils import compute_asset_filename
 from src.utils.image_non_graphic_utils import is_image, group_images
 from src.utils.video_non_graphic_utils import group_videos, is_video
 
@@ -102,10 +103,11 @@ logger.info(f"Script generated '#{len(albums)}' albums")
 
 # For each album save in the appropriate folder the images
 manifest = Manifest(str(read_directory), str(write_directory))
+failed_copies: int = 0
 with logging_redirect_tqdm():
     progress_bar_albums = tqdm(albums, desc="Processing albums", leave=False)
     for album in progress_bar_albums:
-        fully_qualified_album = f"{album.date}"
+        fully_qualified_album = album.get_qualified_name()
         logger.debug(f"Preparing to save album '{fully_qualified_album}'")
 
         album_path = write_directory.joinpath(fully_qualified_album)
@@ -117,9 +119,17 @@ with logging_redirect_tqdm():
         )
         for asset_fullpath_str in progress_bar_assets:
             asset_fullpath = Path(asset_fullpath_str)
-            asset_filename = asset_fullpath.name
+            asset_filename = compute_asset_filename(
+                album, asset_fullpath, read_directory
+            )
+            asset_fullpath_destination = album_path.joinpath(asset_filename)
 
-            asset_fullpath_destination = album_path.joinpath(asset_fullpath.name)
+            destination_already_exists = os.path.isfile(asset_fullpath_destination)
+            if destination_already_exists:
+                failed_copies += 1
+                logger.error(
+                    f"Asset '{asset_filename}' could not be copied to album '{fully_qualified_album}' as the file already exists"
+                )
 
             shutil.copy2(asset_fullpath, album_path)
             manifest.add_entry(
@@ -134,6 +144,7 @@ with logging_redirect_tqdm():
         logger.debug("Album fully generated")
 
 logger.info(f"Script saved '#{len(albums)}' albums")
+logger.info(f"Script had '#{failed_copies}' failed copies")
 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 manifest_file = f"manifest_{timestamp}.json"

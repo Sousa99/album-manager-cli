@@ -6,6 +6,8 @@ from pathlib import Path
 from pillow_heif import register_heif_opener  # type: ignore
 from tqdm import tqdm
 
+from src.constants.file_constants import UNCATEGORIZED_ALBUM
+
 # Add some unsuported mimetypes into the recognized formats
 mimetypes.add_type("image/heic", ".heic")
 mimetypes.add_type("image/heif", ".heif")
@@ -63,7 +65,7 @@ def group_images(images: list[str]) -> dict[str, list[str]]:
         except Exception:
             image_exif = {}
 
-        image_key = "UNKNOWN"
+        image_key = UNCATEGORIZED_ALBUM
         if "DateTime" in image_exif:
             image_datetime_str = image_exif["DateTime"]
             image_datetime = parse_image_datetime(image_datetime_str)

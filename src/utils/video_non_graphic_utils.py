@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 
+from src.constants.file_constants import UNCATEGORIZED_ALBUM
+
 
 def is_video(directory: Path, file: str) -> bool:
     full_path = directory.joinpath(file)
@@ -36,7 +38,7 @@ def group_videos(videos: list[str]) -> dict[str, list[str]]:
         except Exception:
             video_info = {}
 
-        video_key = "UNKNOWN"
+        video_key = UNCATEGORIZED_ALBUM
         video_creation_time = (
             video_info.get("format", {}).get("tags", {}).get("creation_time", None)
         )
