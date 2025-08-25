@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.6.1 (2025-08-25)
+
+### Bug Fixes
+
+- Typehints wrongly used
+  ([`078f07c`](https://github.com/Sousa99/album-manager-cli/commit/078f07c943f9007cbe998ce5b9d0dda96472273a))
+
+
 ## v0.6.0 (2025-08-25)
 
 
