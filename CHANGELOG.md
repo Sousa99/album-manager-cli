@@ -1,12 +1,20 @@
 # CHANGELOG
 
 
+## v0.6.0 (2025-08-25)
+
+
 ## v0.5.1 (2025-08-18)
 
 ### Bug Fixes
 
 - Only report conflicting files with different content
   ([`6565e81`](https://github.com/Sousa99/album-manager-cli/commit/6565e813c315262414d06b31fad083608110f44c))
+
+### Features
+
+- Manifest report conflicts and repeats
+  ([`28c734c`](https://github.com/Sousa99/album-manager-cli/commit/28c734cc9088a49b4c87cc47278a89b65f501072))
 
 
 ## v0.5.0 (2025-08-18)
