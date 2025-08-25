@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from pathlib import Path
 import shutil
 
-from loguru import Logger
+import loguru
 from src.models.copy_status import CopyStatus
 from src.models.manifest import Manifest
 
@@ -14,7 +16,7 @@ def update_manifest_with_copy_status(
     asset_destination: Path,
     album_name: str,
     album_path: Path,
-    logger: Logger,
+    logger: loguru.Logger,
 ) -> None:
     """Update the manifest with the result of a copy operation."""
 
@@ -55,7 +57,7 @@ def update_manifest_free(
     asset_destination: Path,
     album_name: str,
     album_path: Path,
-    logger: Logger,
+    logger: loguru.Logger,
 ) -> None:
     """Update the manifest with a successful copy operation."""
     shutil.copy2(asset_source, album_path)
@@ -73,7 +75,7 @@ def update_manifest_repeat(
     asset_source: Path,
     asset_destination: Path,
     album_name: str,
-    logger: Logger,
+    logger: loguru.Logger,
 ) -> None:
     """
     Update the manifest when the file already exists and is identical (repeat copy).
@@ -94,7 +96,7 @@ def update_manifest_conflict(
     asset_source: Path,
     asset_destination: Path,
     album_name: str,
-    logger: Logger,
+    logger: loguru.Logger,
 ) -> None:
     """
     Update the manifest when there is a conflict (file exists but is different).
