@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from src.constants.file_constants import UNCATEGORIZED_ALBUM
 from src.models.album import Album
+from src.models.copy_status import CopyStatus
 from src.utils.file_utils import files_are_identical
 
 
@@ -23,10 +24,13 @@ def compute_asset_filename(
 def check_copy_creates_conflict(
     path_to_file: Path,
     write_path: Path,
-) -> bool:
+) -> CopyStatus:
     destination_already_exists = os.path.isfile(write_path)
     if not destination_already_exists:
-        return False
+        return CopyStatus.FREE
 
     same_content = files_are_identical(path_to_file, write_path)
-    return not same_content
+    if same_content:
+        return CopyStatus.REPEAT
+
+    return CopyStatus.CONFLICT

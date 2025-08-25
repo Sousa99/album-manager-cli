@@ -1,6 +1,5 @@
 from datetime import datetime
 import os
-import shutil
 from pathlib import Path
 from loguru import logger
 import argparse
@@ -11,6 +10,7 @@ from src.models.album import Album
 from src.models.manifest import Manifest
 from src.utils.asset_utils import check_copy_creates_conflict, compute_asset_filename
 from src.utils.image_non_graphic_utils import is_image, group_images
+from src.utils.manifest_utils import update_manifest_with_copy_status
 from src.utils.video_non_graphic_utils import group_videos, is_video
 
 parser = argparse.ArgumentParser(
@@ -125,25 +125,18 @@ with logging_redirect_tqdm():
             asset_fullpath_destination = album_path.joinpath(asset_filename)
 
             # Check if copy creates conflict
-            conflict = check_copy_creates_conflict(
+            copy_status = check_copy_creates_conflict(
                 asset_fullpath, asset_fullpath_destination
             )
-            if conflict:
-                failed_copies += 1
-                logger.error(
-                    f"Asset '{asset_fullpath}' could not be copied to album '{fully_qualified_album}' as the file already exists"
-                )
-
-                continue
-
-            shutil.copy2(asset_fullpath, album_path)
-            manifest.add_entry(
-                album=fully_qualified_album,
-                source=asset_fullpath,
-                destination=asset_fullpath_destination,
-            )
-            logger.debug(
-                f"Asset '{asset_filename}' copied into album '{fully_qualified_album}'"
+            update_manifest_with_copy_status(
+                manifest=manifest,
+                copy_status=copy_status,
+                asset_filename=asset_filename,
+                asset_source=asset_fullpath,
+                asset_destination=asset_fullpath_destination,
+                album_name=fully_qualified_album,
+                album_path=album_path,
+                logger=logger,
             )
 
         logger.debug("Album fully generated")

@@ -15,8 +15,10 @@ class Manifest:
     read: str
     write: str
     albums: Dict[str, List[ManifestEntry]] = field(default_factory=dict)
+    repeats: List[ManifestEntry] = field(default_factory=list)
+    failures: List[ManifestEntry] = field(default_factory=list)
 
-    def add_entry(
+    def add_album_entry(
         self, album: str, source: Union[str, Path], destination: Union[str, Path]
     ) -> None:
         """Add a file copy entry to a specific album."""
@@ -24,6 +26,20 @@ class Manifest:
         if album not in self.albums:
             self.albums[album] = []
         self.albums[album].append(entry)
+
+    def add_repeat_entry(
+        self, source: Union[str, Path], destination: Union[str, Path]
+    ) -> None:
+        """Add a file copy entry to the repeats list."""
+        entry = ManifestEntry(source=str(source), destination=str(destination))
+        self.repeats.append(entry)
+
+    def add_failure_entry(
+        self, source: Union[str, Path], destination: Union[str, Path]
+    ) -> None:
+        """Add a file copy entry to the failures list."""
+        entry = ManifestEntry(source=str(source), destination=str(destination))
+        self.failures.append(entry)
 
     def save(self, path: Path) -> None:
         """Write the manifest to a JSON file."""
