@@ -1,16 +1,16 @@
 from datetime import datetime
 import os
 from pathlib import Path
+import shutil
 from loguru import logger
 import argparse
 from tqdm import tqdm
 from tqdm.contrib.logging import logging_redirect_tqdm
 
 from src.models.album import Album
-from src.models.manifest import Manifest
-from src.utils.asset_utils import check_copy_creates_conflict, compute_asset_filename
+from src.models.ledger import Ledger
+from src.models.manifest import Manifest, ManifestEntry
 from src.utils.image_non_graphic_utils import is_image, group_images
-from src.utils.manifest_utils import update_manifest_with_copy_status
 from src.utils.video_non_graphic_utils import group_videos, is_video
 
 parser = argparse.ArgumentParser(
@@ -23,15 +23,8 @@ parser.add_argument("write")
 
 # Logger configurations
 logger_format = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> [<level>{level: ^12}</level>] <level>{message}</level>"
-logger.configure(
-    handlers=[
-        dict(
-            sink=lambda msg: tqdm.write(msg, end=""),
-            format=logger_format,
-            colorize=True,
-        )
-    ]
-)
+logger.remove()
+logger.add(lambda msg: tqdm.write(msg, end=""), format=logger_format, colorize=True)
 logger.info("Application starting up 🚀")
 
 # Retrieving parameters
@@ -101,9 +94,10 @@ for album_date, assets in grouped_assets.items():
 
 logger.info(f"Script generated '#{len(albums)}' albums")
 
-# For each album save in the appropriate folder the images
 manifest = Manifest(str(read_directory), str(write_directory))
-failed_copies: int = 0
+ledger = Ledger()
+
+# For each album save in the appropriate folder the images
 with logging_redirect_tqdm():
     progress_bar_albums = tqdm(albums, desc="Processing albums", leave=False)
     for album in progress_bar_albums:
@@ -114,35 +108,64 @@ with logging_redirect_tqdm():
         album_path.mkdir(parents=True, exist_ok=True)
         logger.debug("Album folder created")
 
+        album_name = album.get_qualified_name()
+
         progress_bar_assets = tqdm(
             album.asset_fullpaths, desc="Processing assets", leave=False
         )
         for asset_fullpath_str in progress_bar_assets:
             asset_fullpath = Path(asset_fullpath_str)
-            asset_filename = compute_asset_filename(
-                album, asset_fullpath, read_directory
-            )
-            asset_fullpath_destination = album_path.joinpath(asset_filename)
+            asset_filename = asset_fullpath.name
+            asset_filename_stem = asset_fullpath.stem
+            asset_filename_suffix = asset_fullpath.suffix
 
-            # Check if copy creates conflict
-            copy_status = check_copy_creates_conflict(
-                asset_fullpath, asset_fullpath_destination
+            repeated_entry = ledger.check_matching_entry(album_name, asset_fullpath)
+            if repeated_entry:
+                logger.debug(
+                    f"Asset '{asset_fullpath}' is a repeat of a previous asset, skipping copy"
+                )
+
+                manifest_entry = ManifestEntry(
+                    source=str(asset_fullpath),
+                    filename=asset_filename,
+                    filename_version=repeated_entry.version,
+                    destination=str(repeated_entry.destination),
+                )
+
+                manifest.add_repeat_entry(manifest_entry)
+                continue
+
+            logger.debug(f"Processing asset '{asset_fullpath}'")
+            asset_version = ledger.compute_version(
+                album_name=album.get_qualified_name(),
+                source=asset_fullpath,
+                read_directory=read_directory,
             )
-            update_manifest_with_copy_status(
-                manifest=manifest,
-                copy_status=copy_status,
+
+            asset_filename_with_version = (
+                f"{asset_filename_stem}_{asset_version}{asset_filename_suffix}"
+            )
+            asset_destination = album_path.joinpath(asset_filename_with_version)
+            ledger_entry = ledger.add_entry(
+                album_name=album.get_qualified_name(),
                 asset_filename=asset_filename,
-                asset_source=asset_fullpath,
-                asset_destination=asset_fullpath_destination,
-                album_name=fully_qualified_album,
-                album_path=album_path,
-                logger=logger,
+                source=asset_fullpath,
+                destination=asset_destination,
             )
+
+            shutil.copy2(asset_fullpath, ledger_entry.destination)
+            manifest_entry = ManifestEntry(
+                source=str(asset_fullpath),
+                filename=asset_filename,
+                filename_version=ledger_entry.version,
+                destination=str(ledger_entry.destination),
+            )
+
+            manifest.add_album_entry(album_name, manifest_entry)
 
         logger.debug("Album fully generated")
 
 logger.info(f"Script saved '#{len(albums)}' albums")
-logger.info(f"Script had '#{failed_copies}' failed copies")
 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 manifest_file = f"manifest_{timestamp}.json"
