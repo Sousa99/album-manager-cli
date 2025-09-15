@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from sys import version
 from typing import Dict, Optional, TypeAlias
 
 from src.constants.file_constants import UNCATEGORIZED_ALBUM
@@ -91,6 +90,7 @@ class Ledger:
         self,
         album_name: AlbumName,
         asset_filename: AssetFilename,
+        asset_version: str,
         source: Path,
         destination: Path,
     ) -> LedgerEntry:
@@ -101,7 +101,7 @@ class Ledger:
             raise ValueError("Entry already exists in the ledger.")
 
         new_entry = LedgerEntry(
-            version=version, source=str(source), destination=str(destination)
+            version=asset_version, source=str(source), destination=str(destination)
         )
 
         album: AlbumEntries = self.information.setdefault(album_name, {})

@@ -149,6 +149,7 @@ with logging_redirect_tqdm():
             ledger_entry = ledger.add_entry(
                 album_name=album.get_qualified_name(),
                 asset_filename=asset_filename,
+                asset_version=asset_version,
                 source=asset_fullpath,
                 destination=asset_destination,
             )
