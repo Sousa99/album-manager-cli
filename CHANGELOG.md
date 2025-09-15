@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.7.0 (2025-09-15)
+
+### Features
+
+- Standardizartion of file versioning for no conflicts
+  ([`47a96fe`](https://github.com/Sousa99/album-manager-cli/commit/47a96fe0a78e65a3bb28c4f0b15a69ea86259283))
+
+
 ## v0.6.1 (2025-08-25)
 
 ### Bug Fixes
