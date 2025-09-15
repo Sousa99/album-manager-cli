@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.7.1 (2025-09-15)
+
+### Bug Fixes
+
+- Use correct version for ledger
+  ([`ab17ae0`](https://github.com/Sousa99/album-manager-cli/commit/ab17ae0aa6d89f967ed76193730185201bf25c39))
+
+
 ## v0.7.0 (2025-09-15)
 
 ### Features
